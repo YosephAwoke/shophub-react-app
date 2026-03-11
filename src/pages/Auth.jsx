@@ -1,12 +1,15 @@
 import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Auth() {
   const [mode, setMode] = useState("signup");
   const [error, setError] = useState(null);
 
-  const { signUp, user, logout, login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const { signUp, login } = useContext(AuthContext);
 
   const {
     register,
@@ -23,9 +26,8 @@ export default function Auth() {
       result = login(data.email, data.password);
     }
 
-    // console.log(result);
     if (result.success) {
-      alert("Success!");
+      navigate("/");
     } else {
       setError(result.error);
     }
@@ -35,15 +37,10 @@ export default function Auth() {
     <div className="page">
       <div className="container">
         <div className="auth-container">
-          {user && <p>User logged in: {user.email}</p>}
-          <button className="btn btn-secondary" onClick={() => logout()}>
-            Logout
-          </button>
           <h1 className="page-title">
             {mode === "signup" ? "Sign Up" : "Login"}
           </h1>
           <form className="auto-form" onSubmit={handleSubmit(onSubmit)}>
-
             {error && <div className="error-message">{error}</div>}
             <div className="form-group">
               <label className="form-label" htmlFor="email">
@@ -56,7 +53,9 @@ export default function Auth() {
                 name="email"
                 {...register("email", { required: "Email is required" })}
               />
-              {errors.email && (<span className="form-error">{errors.email.message}</span>)}
+              {errors.email && (
+                <span className="form-error">{errors.email.message}</span>
+              )}
             </div>
             <div className="form-group">
               <label htmlFor="password" className="form-label">
@@ -80,11 +79,11 @@ export default function Auth() {
                 name="password"
                 required
               />
-              {errors.password && (<span className="form-error">{errors.password.message}</span>)}
-
-
+              {errors.password && (
+                <span className="form-error">{errors.password.message}</span>
+              )}
             </div>
-            
+
             <button className="btn btn-primary btn-large " type="submit">
               {mode === "signup" ? "Sign Up" : "Login"}
             </button>
